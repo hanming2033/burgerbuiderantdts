@@ -5,7 +5,7 @@ import orderAxios from '../../http/axios-order'
 import { RouteComponentProps } from 'react-router-dom'
 import { Progress, Button } from 'antd'
 import handleHttpError from '../../http/handleHttpError'
-import Input from '../.elements/Input'
+// import Input from '../.elements/Input'
 
 export interface IContactInfoProps {
   totalPrice: number
@@ -64,7 +64,8 @@ class ContactInfo extends React.Component<IContactInfoProps & IBurgerProps & Rou
         <h4>Enter you contact information</h4>
         <form>
           <input type="text" name="name" placeholder="Your Name" />
-          <Input inputType="input" label="Email" type="email" name="email" placeholder="Your Email" />
+          <input type="email" name="email" placeholder="Your Email" />
+          {/* <Input inputType="input" label="Email" type="email" name="email" placeholder="Your Email" /> */}
           <input type="text" name="street" placeholder="Street" />
           <input type="text" name="postal" placeholder="Postal Code" />
           <Button type="danger" onClick={e => this.handlerOrder(e)}>
