@@ -35,7 +35,6 @@ const InputEl = styled.input`
 const Input: React.SFC<IInputProps> = (props: any) => {
   // set up dynamic input element based on the props passed in
   // this is good to minimize the code in the main component and render the form dynamically with state
-  // this is from test branch
   let inputElement = null
   switch (props.inputType) {
     case 'input':
