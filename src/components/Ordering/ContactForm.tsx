@@ -4,7 +4,7 @@ import { IBurgerProps } from '../BurgerBuilder/BurgerDisplay/Burger'
 import orderAxios from '../../http/axios-order'
 import { RouteComponentProps } from 'react-router-dom'
 import { Form, Select, Icon, Input, Progress, Button } from 'antd'
-// import handleHttpError from '../../http/handleHttpError'
+import handleHttpError from '../../http/handleHttpError'
 import { FormComponentProps } from 'antd/lib/form'
 const FormItem = Form.Item
 
@@ -37,6 +37,7 @@ function hasErrors(fieldsError: any) {
   return Object.keys(fieldsError).some(field => fieldsError[field])
 }
 
+// need to give the prop types to the component
 class ContactInfo extends React.Component<
   IContactInfoProps & IBurgerProps & RouteComponentProps<{}> & FormComponentProps,
   IContactInfoState
@@ -81,22 +82,22 @@ class ContactInfo extends React.Component<
     this.props.form.validateFields()
   }
 
+  // do not use onChange or value to sync state because antd form handles its own state
   public handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
     this.props.form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values)
+        // same as this.props.form.getFiledsValue
+        // this.props.form handles its own state.
         this.setState({ orderForm: values })
-        // TODO to continue from here.
-        // TODO document some tips
-        // TODO combine other orders and ajax
       }
     })
   }
 
   public render() {
     const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form
-    // Only show error after a field is touched.
+    // this is a boolean value to determine the validateStatus
     const nameError = isFieldTouched('name') && getFieldError('name')
     const streetError = isFieldTouched('street') && getFieldError('street')
     const zipCodeError = isFieldTouched('zipCode') && getFieldError('zipCode')
@@ -110,9 +111,14 @@ class ContactInfo extends React.Component<
       <Wrapper>
         {this.state.loading && <Progress percent={50} status="active" />}
         <Form onSubmit={this.handleSubmit}>
+          {/* each form element must be wrapped with Form.Item  */}
           <FormItem validateStatus={emailError ? 'error' : ''} help={emailError || ''}>
+            {/* the main this here, getFieldDecorator creates a property in form's state using the id */}
+            {/* with some other properties like rules */}
+            {/* this then wraps the actual element like input */}
+            {/* if do not wish to use form, simply use the individual elements and apply form validation */}
             {getFieldDecorator('email', {
-              rules: [{ pattern: /.+@.+/, required: true, message: 'Please input your email!' }]
+              rules: [{ type: 'email', required: true, message: 'Please input your email!' }]
             })(<Input type="email" prefix={<Icon type="mail" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Emaill Address" />)}
           </FormItem>
           <FormItem validateStatus={nameError ? 'error' : ''} help={nameError || ''}>
@@ -162,6 +168,6 @@ class ContactInfo extends React.Component<
   }
 }
 
-export default Form.create()(ContactInfo)
+export default handleHttpError(Form.create()(ContactInfo), orderAxios)
 
 // export default handleHttpError(ContactInfo, orderAxios)
