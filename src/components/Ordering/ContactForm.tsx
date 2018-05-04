@@ -49,7 +49,6 @@ class ContactInfo extends React.Component<
     this.setState({ loading: true })
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        console.log('Received values of form: ', values)
         const order = { ingredients: this.props.ingredients, price: this.props.totalPrice, orderData: values }
         orderAxios
           .post('orders.json', order)
