@@ -13,14 +13,6 @@ export interface IContactInfoProps {
 }
 
 export interface IContactInfoState {
-  orderForm: {
-    name: string
-    street: string
-    zipCode: string
-    country: string
-    email: string
-    deliveryMethod: string
-  }
   loading: boolean
 }
 
@@ -43,38 +35,7 @@ class ContactInfo extends React.Component<
   IContactInfoState
 > {
   public state = {
-    orderForm: {
-      name: '',
-      street: '',
-      zipCode: '',
-      country: '',
-      email: '',
-      deliveryMethod: ''
-    },
     loading: false
-  }
-
-  public handlerOrder = (e: React.FormEvent<any>) => {
-    this.setState({ loading: true })
-    const order = {
-      ingredients: this.props.ingredients,
-      price: this.props.totalPrice,
-      customer: {
-        name: 'Zheng Hanming',
-        address: { street: '468C Admiralty Drive', postalCode: '234233', country: 'Singapore' },
-        email: 'hanming@outlook.sg'
-      },
-      deliveryMethod: 'Singpost'
-    } // should calculate on server
-    orderAxios
-      .post('orders.json', order)
-      .then(res => {
-        this.setState({ loading: false })
-        this.props.history.push('/orders')
-      })
-      .catch(err => {
-        this.setState({ loading: false })
-      })
   }
 
   public componentDidMount() {
@@ -83,14 +44,22 @@ class ContactInfo extends React.Component<
   }
 
   // do not use onChange or value to sync state because antd form handles its own state
-  public handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
+  public handleOrderSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
+    this.setState({ loading: true })
     this.props.form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values)
-        // same as this.props.form.getFiledsValue
-        // this.props.form handles its own state.
-        this.setState({ orderForm: values })
+        const order = { ingredients: this.props.ingredients, price: this.props.totalPrice, orderData: values }
+        orderAxios
+          .post('orders.json', order)
+          .then(res => {
+            this.setState({ loading: false })
+            this.props.history.push('/orders')
+          })
+          .catch(error => {
+            this.setState({ loading: false })
+          })
       }
     })
   }
@@ -105,12 +74,10 @@ class ContactInfo extends React.Component<
     const emailError = isFieldTouched('email') && getFieldError('email')
     const deliveryError = isFieldTouched('delivery') && getFieldError('delivery')
 
-    console.log(this.props.form.getFieldsValue())
-
     return (
       <Wrapper>
         {this.state.loading && <Progress percent={50} status="active" />}
-        <Form onSubmit={this.handleSubmit}>
+        <Form onSubmit={this.handleOrderSubmit}>
           {/* each form element must be wrapped with Form.Item  */}
           <FormItem validateStatus={emailError ? 'error' : ''} help={emailError || ''}>
             {/* the main this here, getFieldDecorator creates a property in form's state using the id */}
@@ -123,7 +90,7 @@ class ContactInfo extends React.Component<
           </FormItem>
           <FormItem validateStatus={nameError ? 'error' : ''} help={nameError || ''}>
             {getFieldDecorator('name', {
-              rules: [{ required: true, message: 'Please input your name!' }]
+              rules: [{ min: 3, required: true, message: 'Please input your name!' }]
             })(<Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Name" />)}
           </FormItem>
           <FormItem validateStatus={streetError ? 'error' : ''} help={streetError || ''}>
