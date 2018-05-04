@@ -136,5 +136,3 @@ class ContactInfo extends React.Component<
 }
 
 export default handleHttpError(Form.create()(ContactInfo), orderAxios)
-
-// export default handleHttpError(ContactInfo, orderAxios)
