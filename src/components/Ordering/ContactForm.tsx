@@ -1,15 +1,22 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import { IBurgerProps } from '../BurgerBuilder/BurgerDisplay/Burger'
 import orderAxios from '../../http/axios-order'
 import { RouteComponentProps } from 'react-router-dom'
 import { Form, Select, Icon, Input, Progress, Button } from 'antd'
 import handleHttpError from '../../http/handleHttpError'
 import { FormComponentProps } from 'antd/lib/form'
-const FormItem = Form.Item
+import { IHasPrice, IHasIngredients } from '../../store/state'
+import IAppState from '../../store/state'
+import { connect } from 'react-redux'
+const FormItem: any = Form.Item
 
-export interface IContactInfoProps {
-  totalPrice: number
+interface IStateProps extends IHasPrice, IHasIngredients {}
+
+const mapStateToProps = (state: IAppState): IStateProps => {
+  return {
+    ingredients: state.burger.ingredients,
+    totalPrice: state.burger.totalPrice
+  }
 }
 
 export interface IContactInfoState {
@@ -30,10 +37,7 @@ function hasErrors(fieldsError: any) {
 }
 
 // need to give the prop types to the component
-class ContactInfo extends React.Component<
-  IContactInfoProps & IBurgerProps & RouteComponentProps<{}> & FormComponentProps,
-  IContactInfoState
-> {
+class ContactInfo extends React.Component<IStateProps & RouteComponentProps<{}> & FormComponentProps, IContactInfoState> {
   public state = {
     loading: false
   }
@@ -134,4 +138,4 @@ class ContactInfo extends React.Component<
   }
 }
 
-export default handleHttpError(Form.create()(ContactInfo), orderAxios)
+export default connect(mapStateToProps)(handleHttpError(Form.create()(ContactInfo), orderAxios))

@@ -1,15 +1,22 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import { IBurgerBuilderState, MIN_NUMBER, MAX_NUMBER } from '../-BurgerBuilder'
+import { IBurgerBuilderState } from '../-BurgerBuilder'
+import { MAX_NUMBER, MIN_NUMBER } from '../../../store/reducers/burgerReducer'
 import { Button } from 'antd'
-import { IBurgerIngredientType } from '../BurgerDisplay/BurgerIngredient'
 import Spacer from '../../.elements/Spacer'
+import { ingredientType } from 'src/store/state'
 
 interface IbuildControlProps extends Partial<IBurgerBuilderState> {
+  ingredients: {
+    salad: number
+    bacon: number
+    cheese: number
+    meat: number
+  }
   label: string
   addIngredient: () => void
   removeIngredient: () => void
-  type: IBurgerIngredientType
+  type: ingredientType
 }
 
 const BuildControl = styled.div`

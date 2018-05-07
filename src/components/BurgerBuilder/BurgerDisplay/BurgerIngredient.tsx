@@ -1,10 +1,9 @@
 import * as React from 'react'
 import styled from 'styled-components'
-
-export type IBurgerIngredientType = 'bread-bottom' | 'bread-top' | 'meat' | 'cheese' | 'salad' | 'bacon'
+import { ingredientType } from 'src/store/state'
 
 export interface IBurgerIngredientsProps {
-  type: IBurgerIngredientType
+  type: ingredientType
 }
 
 const BreadBottom = styled.div`

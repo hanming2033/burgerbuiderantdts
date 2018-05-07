@@ -3,11 +3,18 @@ import styled from 'styled-components'
 import BuildControl from './BuildControl'
 import { IBurgerBuilderState } from '../-BurgerBuilder'
 import { Button } from 'antd'
-import { IBurgerIngredientType } from '../BurgerDisplay/BurgerIngredient'
+import { ingredientType } from 'src/store/state'
 
 interface IBuildControlsProps extends IBurgerBuilderState {
-  addIngredient: (igType: IBurgerIngredientType) => void
-  removeIngredient: (igType: IBurgerIngredientType) => void
+  ingredients: {
+    salad: number
+    bacon: number
+    cheese: number
+    meat: number
+  }
+  totalPrice: number
+  addIngredient: (igType: ingredientType) => void
+  removeIngredient: (igType: ingredientType) => void
   toggleSummaryModal: () => void
 }
 
@@ -27,7 +34,7 @@ const PriceParagraph = styled.p`
 `
 
 // BuildControls data optional
-const buildContolsData: Array<{ label: string; type: IBurgerIngredientType }> = [
+const buildContolsData: Array<{ label: string; type: ingredientType }> = [
   { label: 'Salad', type: 'salad' },
   { label: 'Bacon', type: 'bacon' },
   { label: 'Cheese', type: 'cheese' },
@@ -35,7 +42,7 @@ const buildContolsData: Array<{ label: string; type: IBurgerIngredientType }> = 
 ]
 
 const buildControls: React.SFC<IBuildControlsProps> = props => {
-  const CompBuildControls = (data: Array<{ label: string; type: IBurgerIngredientType }>) =>
+  const CompBuildControls = (data: Array<{ label: string; type: ingredientType }>) =>
     data.map(row => (
       <BuildControl
         ingredients={props.ingredients}

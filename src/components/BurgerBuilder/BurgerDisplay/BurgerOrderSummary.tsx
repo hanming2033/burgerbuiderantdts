@@ -3,7 +3,15 @@ import styled from 'styled-components'
 import { Progress } from 'antd'
 import { IBurgerBuilderState } from '../-BurgerBuilder'
 
-interface IOrderSummaryProps extends IBurgerBuilderState {}
+interface IOrderSummaryProps extends IBurgerBuilderState {
+  ingredients: {
+    salad: number
+    bacon: number
+    cheese: number
+    meat: number
+  }
+  totalPrice: number
+}
 
 const IngredientListItem = styled.li`
   list-style: none;

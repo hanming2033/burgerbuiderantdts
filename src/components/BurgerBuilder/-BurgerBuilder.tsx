@@ -4,83 +4,44 @@ import BuilControls from './BuildControls/BuildControls'
 import orderAxios from '../../http/axios-order'
 import { RouteComponentProps } from 'react-router-dom'
 import { Progress } from 'antd'
-import { IBurgerProps } from './BurgerDisplay/Burger'
-import { IBurgerIngredientType } from './BurgerDisplay/BurgerIngredient'
 import { Modal } from 'antd'
 import BurgerOrderSummary from './BurgerDisplay/BurgerOrderSummary'
 import handleHttpError from '../../http/handleHttpError'
 
-export interface IBurgerBuilderProps {}
+// imports for redux: redux adds props to component
+// connect is to link this component to Provider
+// Dispatch is a generic type, Dispatch<ActionDeclaration>
+import { connect, Dispatch } from 'react-redux'
+// IAppState is the app level state in redux
+import IAppState from '../../store/state'
+// BurgerAction contains all actions defined in burgerAction file
+import * as burgerActions from '../../store/reducers/burgerActions'
+import { ingredientType } from 'src/store/state'
+import { IHasIngredients, IHasPrice } from '../../store/state'
 
-export interface IBurgerBuilderState extends IBurgerProps {
-  totalPrice: number
+export interface IBurgerBuilderState {
   showSummaryModal?: boolean
   loadingState?: boolean
   error?: boolean
 }
 
-const INGREDIENT_PRICES = {
-  salad: 0.5,
-  cheese: 0.7,
-  meat: 1.5,
-  bacon: 1.1
-}
-
-export const MAX_NUMBER = {
-  salad: 2,
-  cheese: 2,
-  meat: 2,
-  bacon: 2
-}
-
-export const MIN_NUMBER = {
-  salad: 1,
-  cheese: 0,
-  meat: 1,
-  bacon: 0
-}
-
-class BurgerBuilder extends React.Component<IBurgerBuilderProps & RouteComponentProps<{}>, IBurgerBuilderState> {
+class BurgerBuilder extends React.Component<RouteComponentProps<{}> & IStateProps & IDispathProps, IBurgerBuilderState> {
   public state = {
-    ingredients: { salad: 0, bacon: 0, cheese: 0, meat: 0 },
-    totalPrice: 6.8,
     showSummaryModal: false,
     loadingState: false,
     error: false
   }
 
   public componentDidMount() {
-    orderAxios
-      .get('/ingredients.json')
-      .then(res => {
-        this.setState({ ingredients: res.data })
-        return res
-      })
-      .catch(err => {
-        this.setState({ error: true })
-      })
-  }
-
-  public handleAddIngredient = (igType: IBurgerIngredientType) => {
-    this.setState(prevState => {
-      const newState = { ...prevState }
-      if (newState.ingredients[igType] < MAX_NUMBER[igType]) {
-        newState.ingredients[igType]++
-        newState.totalPrice = newState.totalPrice + INGREDIENT_PRICES[igType]
-      }
-      return newState
-    })
-  }
-
-  public handleRemoveIngredient = (igType: IBurgerIngredientType) => {
-    this.setState(prevState => {
-      const newState = { ...prevState }
-      if (newState.ingredients[igType] > 0 && newState.ingredients[igType] > MIN_NUMBER[igType]) {
-        newState.ingredients[igType]--
-        newState.totalPrice = newState.totalPrice - INGREDIENT_PRICES[igType]
-      }
-      return newState
-    })
+    // orderAxios
+    //   .get('/ingredients.json')
+    //   .then(res => {
+    //     this.setState({ ingredients: res.data })
+    //     return res
+    //   })
+    //   .catch(err => {
+    //     this.setState({ error: true })
+    //   })
   }
 
   public toggleSummaryModal = () => {
@@ -90,33 +51,24 @@ class BurgerBuilder extends React.Component<IBurgerBuilderProps & RouteComponent
   }
 
   public handlePurchaseContinue = () => {
-    // this.setState({ loading: true })
-    const queryParam = []
-    for (const i in this.state.ingredients) {
-      if (this.state.ingredients.hasOwnProperty(i)) {
-        queryParam.push(`${i}=${this.state.ingredients[i]}`)
-      }
-    }
-    queryParam.push(`price=${this.state.totalPrice}`)
-    const queryString = queryParam.join('&')
-    this.props.history.push({ pathname: '/checkout', search: `?${queryString}` })
+    this.props.history.push({ pathname: '/checkout' })
   }
 
   public render() {
     let CompBurger = (
       <>
-        <Burger ingredients={this.state.ingredients} />
+        <Burger ingredients={this.props.ingredients} />
         <BuilControls
           loadingState={this.state.loadingState}
           toggleSummaryModal={this.toggleSummaryModal}
-          totalPrice={this.state.totalPrice}
-          ingredients={this.state.ingredients}
-          addIngredient={(t: IBurgerIngredientType) => this.handleAddIngredient(t)}
-          removeIngredient={(t: IBurgerIngredientType) => this.handleRemoveIngredient(t)}
+          totalPrice={this.props.totalPrice}
+          ingredients={this.props.ingredients}
+          addIngredient={(t: ingredientType) => this.props.handleAddIngredient(t)}
+          removeIngredient={(t: ingredientType) => this.props.handleRemoveIngredient(t)}
         />
       </>
     )
-    CompBurger = this.state.ingredients.meat === 0 ? <Progress percent={50} status="active" /> : CompBurger
+    CompBurger = this.props.ingredients.meat === 10 ? <Progress percent={50} status="active" /> : CompBurger
     CompBurger = this.state.error ? <p>App Failed. Mother Fucker!!</p> : CompBurger
 
     return (
@@ -128,7 +80,7 @@ class BurgerBuilder extends React.Component<IBurgerBuilderProps & RouteComponent
           onOk={this.handlePurchaseContinue}
           onCancel={this.toggleSummaryModal}
         >
-          <BurgerOrderSummary ingredients={this.state.ingredients} totalPrice={this.state.totalPrice} />
+          <BurgerOrderSummary ingredients={this.props.ingredients} totalPrice={this.props.totalPrice} />
         </Modal>
         {CompBurger}
       </>
@@ -136,4 +88,38 @@ class BurgerBuilder extends React.Component<IBurgerBuilderProps & RouteComponent
   }
 }
 
-export default handleHttpError(BurgerBuilder, orderAxios)
+// this IStateProps is the props to represent the props that are passed
+// from mapStateToProps to component
+interface IStateProps extends IHasIngredients, IHasPrice {}
+// redux will manage the state, and it is doing so through this.props.
+// to get the totalPrice use this.props.totalPrice
+// mapStateToProps must return IStateProps
+const mapStateToProps = (state: IAppState): IStateProps => {
+  return {
+    // burger is defined in AppState and rootReducer(combineReducer takes AppState as type)
+    ingredients: state.burger.ingredients,
+    totalPrice: state.burger.totalPrice
+  }
+}
+// *Alternative is to dispatch in component itself: DispatchProps<{}>
+// this IDispatchProps is the props to represent the props that are passed
+// from mapDispatchToProps to component
+interface IDispathProps {
+  handleAddIngredient: (ingredientName: string) => void
+  handleRemoveIngredient: (ingredientName: string) => void
+}
+// this function received the dispatch function which we can use to dispatch action to redux
+// call this.props.xxx to dispatch actions
+// mapDispatchToProps must return IDispatchProps
+const mapDispatchToProps = (dispatch: Dispatch<burgerActions.All>): IDispathProps => {
+  return {
+    handleAddIngredient: (ingredientName: string) =>
+      dispatch({ type: burgerActions.ADD_INGREDIENT, payload: { ingredient: ingredientName } }),
+    handleRemoveIngredient: (ingredientName: string) =>
+      dispatch({ type: burgerActions.REMOVE_INGREDIENT, payload: { ingredient: ingredientName } })
+  }
+}
+// connect is a finction what returns a function which then takes a component as input
+// connect first create the function with the mapping of state and actions
+// which is returning a HOC to wrap around the component
+export default connect(mapStateToProps, mapDispatchToProps)(handleHttpError(BurgerBuilder, orderAxios))

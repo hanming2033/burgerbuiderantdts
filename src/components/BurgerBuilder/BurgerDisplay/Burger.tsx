@@ -1,6 +1,7 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import BurgerIngredient, { IBurgerIngredientType } from './BurgerIngredient'
+import BurgerIngredient from './BurgerIngredient'
+import { ingredientType } from 'src/store/state'
 
 export interface IBurgerProps {
   ingredients: {
@@ -30,7 +31,7 @@ const BurgerWrapper = styled.div`
   }
 `
 // recursive function to add ingredient types into an array
-const addToArray = (igType: IBurgerIngredientType, num: number, arr: any[]) => {
+const addToArray = (igType: ingredientType, num: number, arr: any[]) => {
   if (num <= 0) {
     return
   }
@@ -42,13 +43,10 @@ const addToArray = (igType: IBurgerIngredientType, num: number, arr: any[]) => {
 const Burger: React.SFC<IBurgerProps> = props => {
   // takes the ingredients object from props and split it into arrays of ingredient
   // Object.keys(props.ingredients): take the keys of an object
-  const CompBurgerIngredients: JSX.Element[] | JSX.Element = Object.keys(props.ingredients).reduce(
-    (arr: any[], igType: IBurgerIngredientType) => {
-      addToArray(igType, props.ingredients[igType], arr)
-      return arr
-    },
-    []
-  )
+  const CompBurgerIngredients: JSX.Element[] | JSX.Element = Object.keys(props.ingredients).reduce((arr: any[], igType: ingredientType) => {
+    addToArray(igType, props.ingredients[igType], arr)
+    return arr
+  }, [])
 
   return (
     <BurgerWrapper>
