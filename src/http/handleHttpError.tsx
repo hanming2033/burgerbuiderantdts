@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { AxiosInstance } from 'axios'
 import { notification } from 'antd'
+// tslint:disable-next-line:no-submodule-imports
 import { IconType } from 'antd/lib/notification'
 
 const openNotificationWithIcon = (type: IconType) => {

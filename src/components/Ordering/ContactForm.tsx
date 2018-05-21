@@ -5,6 +5,7 @@ import orderAxios from '../../http/axios-order'
 import { RouteComponentProps } from 'react-router-dom'
 import { Form, Select, Icon, Input, Progress, Button } from 'antd'
 import handleHttpError from '../../http/handleHttpError'
+// tslint:disable-next-line:no-submodule-imports
 import { FormComponentProps } from 'antd/lib/form'
 const FormItem = Form.Item
 
