@@ -1,25 +1,45 @@
 // * DefaultState.ts
 // create types in default state to prevent typo
 export const types = {
-  NETWORK_STATUS: 'NetworkStatus'
+  BURGER: 'burger',
+  UI: 'ui'
+}
+
+export interface IIngredients {
+  salad: number
+  bacon: number
+  cheese: number
+  meat: number
 }
 
 // create interface for state
 interface IState {
-  networkStatus: {
+  burger: {
     __typename: string
-    isConnected: boolean
+    ingredients: IIngredients
+    totalPrice: number
   }
-  addTodoText: string
+  ui: {
+    __typename: string
+    showSummaryModal: boolean
+    loadingState: boolean
+    errorBurgerBuilder: boolean
+  }
 }
 
 // create default values for state
 const defaultState: IState = {
-  networkStatus: {
-    __typename: types.NETWORK_STATUS,
-    isConnected: true
+  burger: {
+    __typename: types.BURGER,
+    ingredients: { salad: 0, bacon: 0, cheese: 0, meat: 0 },
+    totalPrice: 6.8
   },
-  addTodoText: ''
+  ui: {
+    __typename: types.UI,
+    showSummaryModal: false,
+    loadingState: false,
+    errorBurgerBuilder: false
+  }
 }
 
 export default defaultState
