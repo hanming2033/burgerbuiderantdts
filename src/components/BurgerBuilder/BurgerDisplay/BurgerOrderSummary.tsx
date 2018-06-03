@@ -1,9 +1,12 @@
 import * as React from 'react'
 import styled from 'styled-components'
 import { Progress } from 'antd'
-import { IBurgerBuilderState } from '../-BurgerBuilder'
 
-interface IOrderSummaryProps extends IBurgerBuilderState {}
+interface IOrderSummaryProps {
+  totalPrice: number
+  ingredients: any
+  loadingState: boolean
+}
 
 const IngredientListItem = styled.li`
   list-style: none;

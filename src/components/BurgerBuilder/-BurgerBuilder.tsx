@@ -1,5 +1,5 @@
 import * as React from 'react'
-import Burger, { IBurgerProps } from './BurgerDisplay/Burger'
+import Burger from './BurgerDisplay/Burger'
 import BuilControls from './BuildControls/BuildControls'
 import orderAxios from '../../http/axios-order'
 import { RouteComponentProps } from 'react-router-dom'
@@ -7,15 +7,13 @@ import { Progress, Modal } from 'antd'
 import { IBurgerIngredientType } from './BurgerDisplay/BurgerIngredient'
 import BurgerOrderSummary from './BurgerDisplay/BurgerOrderSummary'
 import handleHttpError from '../../http/handleHttpError'
+import { Query, QueryResult } from 'react-apollo'
+import { GET_BURGERBUILDER_STATES } from '../../data/Queries'
+import { GetBurgerBuilderStatesQuery } from '../../data/clientSchema-types'
 
 export interface IBurgerBuilderProps {}
 
-export interface IBurgerBuilderState extends IBurgerProps {
-  totalPrice: number
-  showSummaryModal?: boolean
-  loadingState?: boolean
-  error?: boolean
-}
+export interface IBurgerBuilderState {}
 
 const INGREDIENT_PRICES = {
   salad: 0.5,
@@ -38,98 +36,127 @@ export const MIN_NUMBER = {
   bacon: 0
 }
 
+class WithQuery extends Query<GetBurgerBuilderStatesQuery> {}
+
 class BurgerBuilder extends React.Component<IBurgerBuilderProps & RouteComponentProps<{}>, IBurgerBuilderState> {
-  public state = {
-    ingredients: { salad: 0, bacon: 0, cheese: 0, meat: 0 },
-    totalPrice: 6.8,
-    showSummaryModal: false,
-    loadingState: false,
-    error: false
-  }
+  // public componentDidMount() {
+  //   orderAxios
+  //     .get('/ingredients.json')
+  //     .then(res => {
+  //       this.setState({ ingredients: res.data })
+  //       return res
+  //     })
+  //     .catch(err => {
+  //       this.setState({ error: true })
+  //     })
+  // }
 
-  public componentDidMount() {
-    orderAxios
-      .get('/ingredients.json')
-      .then(res => {
-        this.setState({ ingredients: res.data })
-        return res
-      })
-      .catch(err => {
-        this.setState({ error: true })
-      })
-  }
-
-  public handleAddIngredient = (igType: IBurgerIngredientType) => {
-    this.setState(prevState => {
-      const newState = { ...prevState }
-      if (newState.ingredients[igType] < MAX_NUMBER[igType]) {
-        newState.ingredients[igType]++
-        newState.totalPrice = newState.totalPrice + INGREDIENT_PRICES[igType]
+  public handleAddIngredient = (igType: IBurgerIngredientType, qryRes: QueryResult<GetBurgerBuilderStatesQuery>) => {
+    if (qryRes.data) {
+      const qty: number = qryRes.data.burger.ingredients[igType]
+      let price: number = qryRes.data.burger.totalPrice
+      const newIngredients = { ...qryRes.data.burger.ingredients }
+      if (qty < MAX_NUMBER[igType]) {
+        newIngredients[igType] = qty + 1
+        price = price + INGREDIENT_PRICES[igType]
       }
-      return newState
-    })
-  }
-
-  public handleRemoveIngredient = (igType: IBurgerIngredientType) => {
-    this.setState(prevState => {
-      const newState = { ...prevState }
-      if (newState.ingredients[igType] > 0 && newState.ingredients[igType] > MIN_NUMBER[igType]) {
-        newState.ingredients[igType]--
-        newState.totalPrice = newState.totalPrice - INGREDIENT_PRICES[igType]
+      const newData: GetBurgerBuilderStatesQuery = {
+        ...qryRes.data,
+        burger: {
+          ...qryRes.data.burger,
+          totalPrice: price,
+          ingredients: newIngredients
+        }
       }
-      return newState
-    })
-  }
-
-  public toggleSummaryModal = () => {
-    this.setState(prevState => {
-      return { showSummaryModal: !prevState.showSummaryModal }
-    })
-  }
-
-  public handlePurchaseContinue = () => {
-    // this.setState({ loading: true })
-    const queryParam = []
-    for (const i in this.state.ingredients) {
-      if (this.state.ingredients.hasOwnProperty(i)) {
-        queryParam.push(`${i}=${this.state.ingredients[i]}`)
-      }
+      qryRes.client.writeData({ data: newData })
     }
-    queryParam.push(`price=${this.state.totalPrice}`)
-    const queryString = queryParam.join('&')
-    this.props.history.push({ pathname: '/checkout', search: `?${queryString}` })
+  }
+
+  public handleRemoveIngredient = (igType: IBurgerIngredientType, qryRes: QueryResult<GetBurgerBuilderStatesQuery>) => {
+    if (qryRes.data) {
+      const qty: number = qryRes.data.burger.ingredients[igType]
+      let price: number = qryRes.data.burger.totalPrice
+      const newIngredients = { ...qryRes.data.burger.ingredients }
+      if (qty > 0 && qty > MIN_NUMBER[igType]) {
+        newIngredients[igType] = qty - 1
+        price = price - INGREDIENT_PRICES[igType]
+      }
+      const newData: GetBurgerBuilderStatesQuery = {
+        ...qryRes.data,
+        burger: {
+          ...qryRes.data.burger,
+          totalPrice: price,
+          ingredients: newIngredients
+        }
+      }
+      qryRes.client.writeData({ data: newData })
+    }
+  }
+
+  public handlePurchaseContinue = (qryRes: QueryResult<GetBurgerBuilderStatesQuery>) => {
+    if (qryRes.data) {
+      const newData: GetBurgerBuilderStatesQuery = {
+        ...qryRes.data,
+        ui: {
+          ...qryRes.data.ui,
+          showSummaryModal: false
+        }
+      }
+      qryRes.client.writeData({ data: newData })
+    }
+    this.props.history.push({ pathname: '/checkout' })
+  }
+
+  public handleToggleStatus = (field: string, qryRes: QueryResult<GetBurgerBuilderStatesQuery>) => {
+    if (qryRes.data) {
+      const newData: GetBurgerBuilderStatesQuery = {
+        ...qryRes.data,
+        ui: {
+          ...qryRes.data.ui,
+          [field]: !qryRes.data.ui[field]
+        }
+      }
+      qryRes.client.writeData({ data: newData })
+    }
   }
 
   public render() {
-    let CompBurger = (
-      <>
-        <Burger ingredients={this.state.ingredients} />
-        <BuilControls
-          loadingState={this.state.loadingState}
-          toggleSummaryModal={this.toggleSummaryModal}
-          totalPrice={this.state.totalPrice}
-          ingredients={this.state.ingredients}
-          addIngredient={(t: IBurgerIngredientType) => this.handleAddIngredient(t)}
-          removeIngredient={(t: IBurgerIngredientType) => this.handleRemoveIngredient(t)}
-        />
-      </>
-    )
-    CompBurger = this.state.ingredients.meat === 0 ? <Progress percent={50} status="active" /> : CompBurger
-    CompBurger = this.state.error ? <p>App Failed. Mother Fucker!!</p> : CompBurger
-
     return (
-      <>
-        <Modal
-          title="Burger Order Summary"
-          wrapClassName="vertical-center-modal"
-          visible={this.state.showSummaryModal}
-          onOk={this.handlePurchaseContinue}
-          onCancel={this.toggleSummaryModal}
-        >
-          <BurgerOrderSummary ingredients={this.state.ingredients} totalPrice={this.state.totalPrice} />
-        </Modal>
-        {CompBurger}
-      </>
+      <WithQuery query={GET_BURGERBUILDER_STATES}>
+        {qryRes => {
+          if (qryRes.loading) return 'loading'
+          if (qryRes.error || !qryRes.data) return 'error'
+          const {
+            data: { burger, ui }
+          } = qryRes
+          // create ingredients and delete __typename from it
+          const ingredients = { ...burger.ingredients }
+          delete ingredients.__typename
+          if (ingredients.meat === 0) return <Progress percent={50} status="active" />
+          if (ui.error) return <p>App Failed. Mother Fucker!!</p>
+          return (
+            <>
+              <Modal
+                title="Burger Order Summary"
+                wrapClassName="vertical-center-modal"
+                visible={ui.showSummaryModal}
+                onOk={() => this.handlePurchaseContinue(qryRes)}
+                onCancel={e => this.handleToggleStatus('showSummaryModal', qryRes)}
+              >
+                <BurgerOrderSummary ingredients={ingredients} totalPrice={burger.totalPrice} loadingState={ui.loadingState} />
+              </Modal>
+              <Burger ingredients={ingredients} />
+              <BuilControls
+                toggleSummaryModal={() => this.handleToggleStatus('showSummaryModal', qryRes)}
+                totalPrice={burger.totalPrice}
+                ingredients={ingredients}
+                addIngredient={(t: IBurgerIngredientType) => this.handleAddIngredient(t, qryRes)}
+                removeIngredient={(t: IBurgerIngredientType) => this.handleRemoveIngredient(t, qryRes)}
+              />
+            </>
+          )
+        }}
+      </WithQuery>
     )
   }
 }

@@ -1,11 +1,12 @@
 import * as React from 'react'
 import styled from 'styled-components'
 import BuildControl from './BuildControl'
-import { IBurgerBuilderState } from '../-BurgerBuilder'
 import { Button } from 'antd'
 import { IBurgerIngredientType } from '../BurgerDisplay/BurgerIngredient'
+import { IBurgerProps } from '../BurgerDisplay/Burger'
 
-interface IBuildControlsProps extends IBurgerBuilderState {
+interface IBuildControlsProps extends IBurgerProps {
+  totalPrice: number
   addIngredient: (igType: IBurgerIngredientType) => void
   removeIngredient: (igType: IBurgerIngredientType) => void
   toggleSummaryModal: () => void

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import styled from 'styled-components'
 
-export type IBurgerIngredientType = 'bread-bottom' | 'bread-top' | 'meat' | 'cheese' | 'salad' | 'bacon'
+export type IBurgerIngredientType = 'bread-bottom' | 'bread-top' | 'meat' | 'cheese' | 'salad' | 'bacon' | '__typename'
 
 export interface IBurgerIngredientsProps {
   type: IBurgerIngredientType

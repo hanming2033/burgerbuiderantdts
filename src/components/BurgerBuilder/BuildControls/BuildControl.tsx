@@ -1,12 +1,13 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import { IBurgerBuilderState, MIN_NUMBER, MAX_NUMBER } from '../-BurgerBuilder'
+import { MIN_NUMBER, MAX_NUMBER } from '../-BurgerBuilder'
 import { Button } from 'antd'
 import { IBurgerIngredientType } from '../BurgerDisplay/BurgerIngredient'
 import Spacer from '../../.elements/Spacer'
 
-interface IbuildControlProps extends Partial<IBurgerBuilderState> {
+interface IbuildControlProps {
   label: string
+  ingredients: any
   addIngredient: () => void
   removeIngredient: () => void
   type: IBurgerIngredientType
