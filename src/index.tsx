@@ -15,8 +15,8 @@ import { WebSocketLink } from 'apollo-link-ws'
 import { getMainDefinition } from 'apollo-utilities'
 import { ApolloProvider } from 'react-apollo'
 import { AUTH_TOKEN } from './constants'
-import defaultState from './data/DefaultState'
-import typeDefs from './data/typeDefs'
+import defaultState from './data/setup/DefaultState'
+import typeDefs from './data/setup/typeDefs'
 
 // Create an http link
 const httpLink = new HttpLink({

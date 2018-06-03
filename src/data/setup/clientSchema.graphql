@@ -3,6 +3,7 @@ type Query {
   burger: Burger!
   ui: UI!
   ingredients: Ingredients!
+  forms: forms!
 }
 
 type UI {
@@ -26,4 +27,12 @@ type Ingredients {
 type State {
   burger: Burger!
   ui: UI!
+}
+
+type forms {
+  input_Signup_Name: String!
+  input_Signup_Email: String!
+  input_Signup_Password: String!
+  input_Login_Email: String!
+  input_Login_Password: String!
 }

@@ -9,7 +9,7 @@ import BurgerOrderSummary from './BurgerDisplay/BurgerOrderSummary'
 import handleHttpError from '../../http/handleHttpError'
 import { Query, QueryResult } from 'react-apollo'
 import { GET_BURGERBUILDER_STATES } from '../../data/Queries'
-import { GetBurgerBuilderStatesQuery } from '../../data/clientSchema-types'
+import { GetBurgerBuilderStatesQuery } from '../../data/setup/clientSchema-types'
 
 export interface IBurgerBuilderProps {}
 

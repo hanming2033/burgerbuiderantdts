@@ -1,6 +1,7 @@
 // * DefaultState.ts
 // create types in default state to prevent typo
 export const types = {
+  FORMS: 'forms',
   BURGER: 'Burger',
   UI: 'UI',
   BURGER_INGREDIENT: 'BurgerIngredients',
@@ -29,6 +30,14 @@ interface IState {
     loadingState: boolean
     error: boolean
   }
+  forms: {
+    __typename: string
+    input_Signup_Name: string
+    input_Signup_Email: string
+    input_Signup_Password: string
+    input_Login_Email: string
+    input_Login_Password: string
+  }
 }
 
 // create default values for state
@@ -44,6 +53,14 @@ const defaultState: IState = {
     showSummaryModal: false,
     loadingState: false,
     error: false
+  },
+  forms: {
+    __typename: types.FORMS,
+    input_Signup_Name: '',
+    input_Signup_Email: '',
+    input_Signup_Password: '',
+    input_Login_Email: '',
+    input_Login_Password: ''
   }
 }
 
