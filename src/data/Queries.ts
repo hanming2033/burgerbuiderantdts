@@ -18,3 +18,17 @@ export const GET_BURGERBUILDER_STATES = gql`
     }
   }
 `
+
+export const GET_BURGER_DETAILS = gql`
+  query GetBurgerDetails {
+    burger @client {
+      ingredients {
+        salad
+        bacon
+        cheese
+        meat
+      }
+      totalPrice
+    }
+  }
+`

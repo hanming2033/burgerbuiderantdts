@@ -4,7 +4,7 @@ import { Progress } from 'antd'
 
 interface IOrderSummaryProps {
   totalPrice: number
-  ingredients: any
+  ingredients: { salad: number; meat: number; cheese: number; bacon: number }
   loadingState: boolean
 }
 

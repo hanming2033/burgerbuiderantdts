@@ -20,3 +20,17 @@ export interface GetBurgerBuilderStatesQuery {
     error: boolean,
   },
 };
+
+export interface GetBurgerDetailsQuery {
+  burger:  {
+    __typename: "Burger",
+    ingredients:  {
+      __typename: "Ingredients",
+      salad: number,
+      bacon: number,
+      cheese: number,
+      meat: number,
+    },
+    totalPrice: number,
+  },
+};

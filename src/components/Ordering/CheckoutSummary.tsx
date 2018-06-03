@@ -13,7 +13,7 @@ const Wrapper = styled.div`
   text-align: center;
 `
 
-const CheckoutSummary: React.SFC<ICheckoutSummaryProps> = (props: ICheckoutSummaryProps) => {
+const CheckoutSummary: React.SFC<ICheckoutSummaryProps> = props => {
   return (
     <Wrapper>
       <h1>What a delicious Burger!</h1>
