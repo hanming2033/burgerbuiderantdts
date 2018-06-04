@@ -3,6 +3,9 @@ import orderAxios from '../../http/axios-order'
 import { IBurgerProps } from '../BurgerBuilder/BurgerDisplay/Burger'
 import { Card, Icon, Avatar } from 'antd'
 import styled from 'styled-components'
+import { GetMyOrdersQuery } from '../../data/clientSchema-types'
+import { Query } from 'react-apollo'
+import { GET_MY_ORDERS } from '../../data/Queries'
 const { Meta } = Card
 
 export interface IOrdersProps {}
@@ -36,7 +39,6 @@ const Wrapper = styled.div`
 
 const CompOrders = (orders: ISingleOrderProps[]) => {
   return orders.map(order => {
-    console.log(order)
     const price = 'Price: $' + order.price
     const ingredients = `${order.ingredients.salad} portion of salad, ${order.ingredients.cheese} portion of cheese, ${
       order.ingredients.bacon
@@ -58,6 +60,8 @@ const CompOrders = (orders: ISingleOrderProps[]) => {
   })
 }
 
+class WithGetOrdersQuery extends Query<GetMyOrdersQuery> {}
+
 export default class Orders extends React.Component<IOrdersProps, IOrdersState> {
   public state = {
     orders: [],
@@ -77,8 +81,18 @@ export default class Orders extends React.Component<IOrdersProps, IOrdersState> 
   }
 
   public render() {
-    return <Wrapper>{CompOrders(this.state.orders)}</Wrapper>
+    return (
+      <WithGetOrdersQuery query={GET_MY_ORDERS}>
+        {qryRes => {
+          if (qryRes.loading) return <p>Loading...</p>
+          if (!qryRes.data) return <p>Error</p>
+          console.log(qryRes.data)
+
+          return <Wrapper>{CompOrders(this.state.orders)}</Wrapper>
+        }}
+      </WithGetOrdersQuery>
+    )
   }
 }
 
-// todo: with http eeror handler
+// todo: figure out how to auth

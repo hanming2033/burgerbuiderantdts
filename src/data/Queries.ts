@@ -53,3 +53,26 @@ export const GET_LOGIN_INPUTS = gql`
     }
   }
 `
+
+export const GET_MY_ORDERS = gql`
+  query GetMyOrders {
+    me {
+      name
+      email
+      orders {
+        id
+        ingredients {
+          bacon
+          cheese
+          meat
+          salad
+        }
+        country
+        delivery
+        street
+        zipCode
+        price
+      }
+    }
+  }
+`

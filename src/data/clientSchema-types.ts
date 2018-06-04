@@ -84,3 +84,27 @@ export interface GetLoginInputsQuery {
     input_Login_Password: string,
   },
 };
+
+export interface GetMyOrdersQuery {
+  me:  {
+    __typename: "User",
+    name: string,
+    email: string,
+    orders:  Array< {
+      __typename: "Order",
+      id: string,
+      ingredients:  {
+        __typename: "Ingredients",
+        bacon: number,
+        cheese: number,
+        meat: number,
+        salad: number,
+      },
+      country: string,
+      delivery: string,
+      street: string,
+      zipCode: string,
+      price: number,
+    } | null >,
+  } | null,
+};

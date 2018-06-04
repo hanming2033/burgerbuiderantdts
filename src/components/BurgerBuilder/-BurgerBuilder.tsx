@@ -36,7 +36,7 @@ export const MIN_NUMBER = {
   bacon: 0
 }
 
-class WithQuery extends Query<GetBurgerBuilderStatesQuery> {}
+// class WithQuery extends Query<GetBurgerBuilderStatesQuery> {}
 
 class BurgerBuilder extends React.Component<IBurgerBuilderProps & RouteComponentProps<{}>, IBurgerBuilderState> {
   // public componentDidMount() {
@@ -122,7 +122,8 @@ class BurgerBuilder extends React.Component<IBurgerBuilderProps & RouteComponent
 
   public render() {
     return (
-      <WithQuery query={GET_BURGERBUILDER_STATES}>
+      // tslint:disable-next-line:no-unused-expression
+      <Query<GetBurgerBuilderStatesQuery> query={GET_BURGERBUILDER_STATES}>
         {qryRes => {
           if (qryRes.loading) return 'loading'
           if (qryRes.error || !qryRes.data) return 'error'
@@ -156,7 +157,7 @@ class BurgerBuilder extends React.Component<IBurgerBuilderProps & RouteComponent
             </>
           )
         }}
-      </WithQuery>
+      </Query>
     )
   }
 }

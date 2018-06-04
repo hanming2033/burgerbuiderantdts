@@ -10,11 +10,10 @@ export interface ICheckoutProps {}
 
 export interface ICheckoutState {}
 
-class WithQuery extends Query<GetBurgerDetailsQuery> {}
-
 const Checkout: React.SFC<ICheckoutProps & RouteComponentProps<{}>> = props => {
   return (
-    <WithQuery query={GET_BURGER_DETAILS}>
+    // tslint:disable-next-line:no-unused-expression
+    <Query<GetBurgerDetailsQuery> query={GET_BURGER_DETAILS}>
       {qryRes => {
         if (qryRes.loading) return <p>Loading...</p>
         if (!qryRes.data) return <p>Error !!</p>
@@ -35,7 +34,7 @@ const Checkout: React.SFC<ICheckoutProps & RouteComponentProps<{}>> = props => {
           </>
         )
       }}
-    </WithQuery>
+    </Query>
   )
 }
 

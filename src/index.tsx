@@ -18,39 +18,18 @@ import { AUTH_TOKEN } from './constants'
 import defaultState from './data/setup/DefaultState'
 import typeDefs from './data/setup/typeDefs'
 
-// Create an http link
-const httpLink = new HttpLink({
-  uri: 'http://localhost:4000'
-})
-// Create a WebSocket link
-const wsLink = new WebSocketLink({
-  uri: `ws://localhost:4000`,
-  options: {
-    reconnect: true,
-    connectionParams: {
-      authToken: localStorage.getItem(AUTH_TOKEN)
-    }
-  }
-})
-// using the ability to split links, you can send data to each link
-// depending on what kind of operation is being sent
-const linkSplit = split(
-  // split based on operation type
-  ({ query }) => {
-    const queryDefinition = getMainDefinition(query)
-    return queryDefinition.kind === 'OperationDefinition' && queryDefinition.operation === 'subscription'
-  },
-  wsLink,
-  httpLink
-)
+// define cache to use, default InMemoryCache
+const cache = new InMemoryCache({})
 
 // setup authentication header
 const request = async (operation: Operation) => {
   // in this case, auth token is stored in localStorage
   const token = await localStorage.getItem(AUTH_TOKEN)
+  console.log(token ? `Bearer ${token}` : '')
+
   operation.setContext({
     headers: {
-      authorization: token
+      authorization: token ? `Bearer ${token}` : ''
     }
   })
 }
@@ -75,17 +54,41 @@ const requestLink = new ApolloLink(
     })
 )
 
-// define cache to use, default InMemoryCache
-const cache = new InMemoryCache({})
+// Create an http link
+const httpLink = new HttpLink({
+  uri: 'http://localhost:4000',
+  credentials: 'include'
+})
+// Create a WebSocket link
+const wsLink = new WebSocketLink({
+  uri: `ws://localhost:4000`,
+  options: {
+    reconnect: true,
+    connectionParams: {
+      authToken: localStorage.getItem(AUTH_TOKEN)
+    }
+  }
+})
+// using the ability to split links, you can send data to each link
+// depending on what kind of operation is being sent
+const linkSplit = split(
+  // split based on operation type
+  ({ query }) => {
+    const queryDefinition = getMainDefinition(query)
+    return queryDefinition.kind === 'OperationDefinition' && queryDefinition.operation === 'subscription'
+  },
+  wsLink,
+  httpLink
+)
 
 const client = new ApolloClient({
   link: ApolloLink.from([
     onError(({ graphQLErrors, networkError }) => {
       if (graphQLErrors)
         graphQLErrors.map(({ message, locations, path }) =>
-          console.log(`[GraphQL error]: Message: message, Location: locations, Path: path`)
+          console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`)
         )
-      if (networkError) console.log(`[Network error]: networkError`)
+      if (networkError) console.log(`[Network error]: ${networkError}`)
     }),
     requestLink,
     withClientState({
@@ -95,7 +98,7 @@ const client = new ApolloClient({
       typeDefs,
       cache
     }),
-    linkSplit
+    linkSplit // this is for subscription
   ]),
   cache
 })
