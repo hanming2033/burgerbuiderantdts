@@ -9,7 +9,7 @@ import BurgerOrderSummary from './BurgerDisplay/BurgerOrderSummary'
 import handleHttpError from '../../http/handleHttpError'
 import { Query, QueryResult } from 'react-apollo'
 import { GET_BURGERBUILDER_STATES } from '../../data/actions/Queries'
-import { GetBurgerBuilderStatesQuery } from '../../data/graphql-types';
+import { GetBurgerBuilderStatesQuery } from '../../data/graphql-types'
 
 export interface IBurgerBuilderProps {}
 
@@ -122,7 +122,6 @@ class BurgerBuilder extends React.Component<IBurgerBuilderProps & RouteComponent
 
   public render() {
     return (
-      // tslint:disable-next-line:no-unused-expression
       <Query<GetBurgerBuilderStatesQuery> query={GET_BURGERBUILDER_STATES}>
         {qryRes => {
           if (qryRes.loading) return 'loading'
@@ -142,7 +141,7 @@ class BurgerBuilder extends React.Component<IBurgerBuilderProps & RouteComponent
                 wrapClassName="vertical-center-modal"
                 visible={ui.showSummaryModal}
                 onOk={() => this.handlePurchaseContinue(qryRes)}
-                onCancel={e => this.handleToggleStatus('showSummaryModal', qryRes)}
+                onCancel={() => this.handleToggleStatus('showSummaryModal', qryRes)}
               >
                 <BurgerOrderSummary ingredients={ingredients} totalPrice={burger.totalPrice} loadingState={ui.loadingState} />
               </Modal>

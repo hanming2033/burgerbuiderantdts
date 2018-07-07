@@ -7,6 +7,9 @@ import * as yup from 'yup'
 import { RouteComponentProps } from 'react-router'
 import { AuthProxy, verifyUser } from './AuthProxy'
 import { TChangeComponent, TSetAuth } from './AuthenticatorRouter'
+import InputField from '../.elements/InputField'
+import { Button } from 'antd'
+import Spacer from '../.elements/Spacer'
 
 // *1 define the form values interface
 interface ISigninFormValues {
@@ -35,15 +38,13 @@ const schemaSignup = yup.object().shape({
 })
 
 // *3 create actual form outsourced from Formik
-const formSignin = ({ errors, touched, isSubmitting }: FormikProps<ISigninFormValues>) => (
+const formSignin = ({ isSubmitting }: FormikProps<ISigninFormValues>) => (
   <Form>
-    <Field name="email" placeholder="Email" />
-    {touched.email && errors.email}
-    <br />
-    <Field type="password" name="password" placeholder="Password" />
-    {touched.password && errors.password}
-    <br />
-    <button disabled={isSubmitting}>Sign In</button>
+    <Field name="email" placeholder="Email" component={InputField} />
+    <Field type="password" name="password" placeholder="Password" component={InputField} />
+    <Button type="primary" htmlType="submit" loading={isSubmitting}>
+      Sign In
+    </Button>
   </Form>
 )
 
@@ -111,8 +112,14 @@ class Signin extends React.Component<ISignInProps & RouteComponentProps<{}>, ISi
                 onSubmit={(values, formikBag) => this.login(values, formikBag, qryRes)}
                 component={formSignin}
               />
-              <button onClick={() => this.props.changeComponentTo('forgotPassword')}>Forgot Password</button>
-              <button onClick={() => this.props.changeComponentTo('signUp')}>Go to SignUp</button>
+              <div style={{ height: '10px' }} />
+              <Button type="primary" htmlType="submit" onClick={() => this.props.changeComponentTo('forgotPassword')}>
+                Forgot Password
+              </Button>
+              <Spacer margin="5px" />
+              <Button type="primary" htmlType="submit" onClick={() => this.props.changeComponentTo('signUp')}>
+                Go to SignUp
+              </Button>
             </>
           )
         }}

@@ -1,10 +1,10 @@
 import * as React from 'react'
 import CheckoutSummary from './CheckoutSummary'
-import { RouteComponentProps, Route } from 'react-router-dom'
-import ContactInfo from './ContactForm'
+import { RouteComponentProps } from 'react-router-dom'
 import { Query } from 'react-apollo'
 import { GET_BURGER_DETAILS } from '../../data/actions/Queries'
-import { GetBurgerDetailsQuery } from '../../data/graphql-types';
+import { GetBurgerDetailsQuery } from '../../data/graphql-types'
+import ContactForm from './ContactForm'
 
 export interface ICheckoutProps {}
 
@@ -12,7 +12,6 @@ export interface ICheckoutState {}
 
 const Checkout: React.SFC<ICheckoutProps & RouteComponentProps<{}>> = props => {
   return (
-    // tslint:disable-next-line:no-unused-expression
     <Query<GetBurgerDetailsQuery> query={GET_BURGER_DETAILS}>
       {qryRes => {
         if (qryRes.loading) return <p>Loading...</p>
@@ -22,15 +21,8 @@ const Checkout: React.SFC<ICheckoutProps & RouteComponentProps<{}>> = props => {
         delete ingredients.__typename
         return (
           <>
-            <CheckoutSummary
-              cancelCheckout={() => props.history.goBack()}
-              continueCheckout={() => props.history.replace('/checkout/contact-form')}
-              ingredients={ingredients}
-            />
-            <Route
-              path={`${props.match.path}/contact-form`}
-              render={() => <ContactInfo ingredients={ingredients} totalPrice={totalPrice} {...props} />}
-            />
+            <CheckoutSummary ingredients={ingredients} />
+            <ContactForm ingredients={ingredients} totalPrice={totalPrice} {...props} cancelCheckout={() => props.history.goBack()} />
           </>
         )
       }}
