@@ -39,14 +39,15 @@ async function fetchRemoteSchema(url, insecure) {
     const result = await response.json()
 
     if (result.errors) {
-      throw new Error(`Errors in introspection query result: ${result.errors}`)
+      throw new Error(`~~~Errors in introspection query result: ${result.errors}`)
     }
     if (!result.data) {
-      throw new Error(`No introspection query result data from: ${JSON.stringify(result)}`)
+      throw new Error(`~~~No introspection query result data from: ${JSON.stringify(result)}`)
     }
     return buildClientSchema(result.data)
   } catch (e) {
-    throw new Error(`Error while fetching introspection query: ${e.message}`)
+    console.log(`~~~Failed to connect to server, No remote schema: ${e.message}`)
+    return ''
   }
 }
 
@@ -62,10 +63,18 @@ async function introspectSchema(remoteURL, clientURL, output, insecure) {
   return fetchRemoteSchema(remoteURL, true)
     .then(schema => {
       const clientSchemas = fileLoader(clientURL)
-      const remoteSchema = printSchema(schema)
-      const typeDefs = mergeTypes([...clientSchemas, remoteSchema], {
-        all: true
-      })
+      let typeDefs
+      if (schema !== '') {
+        const remoteSchema = printSchema(schema)
+        typeDefs = mergeTypes([...clientSchemas, remoteSchema], {
+          all: true
+        })
+      } else {
+        typeDefs = mergeTypes([...clientSchemas], {
+          all: true
+        })
+      }
+
       return makeExecutableSchema({
         typeDefs,
         resolverValidationOptions: {
@@ -85,7 +94,7 @@ async function introspectSchema(remoteURL, clientURL, output, insecure) {
     })
 }
 
-const remoteSchema = 'http://localhost:4000/'
+const remoteSchema = ''
 const clientSchema = path.resolve('', 'src/**/*.graphql')
 const output = path.resolve('', 'schemaDump.json')
 

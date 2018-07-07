@@ -2,9 +2,9 @@ import * as React from 'react'
 import CheckoutSummary from './CheckoutSummary'
 import { RouteComponentProps, Route } from 'react-router-dom'
 import ContactInfo from './ContactForm'
-import { GetBurgerDetailsQuery } from '../../data/setup/clientSchema-types'
 import { Query } from 'react-apollo'
-import { GET_BURGER_DETAILS } from '../../data/Queries'
+import { GET_BURGER_DETAILS } from '../../data/actions/Queries'
+import { GetBurgerDetailsQuery } from '../../data/graphql-types';
 
 export interface ICheckoutProps {}
 

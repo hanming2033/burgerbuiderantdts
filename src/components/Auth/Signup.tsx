@@ -1,102 +1,127 @@
 import * as React from 'react'
-import { Query, Mutation, FetchResult } from 'react-apollo'
-import { AUTH_TOKEN } from '../../data/setup/constants'
-import { RouteComponentProps } from 'react-router'
-import { GetSignUpInputsQuery, SignupUserMutation, SignupUserMutationVariables } from '../../data/clientSchema-types'
-import { GET_SIGN_UP_INPUTS } from '../../data/Queries'
-import { SIGNUP_USER } from '../../data/Mutations'
-import InputEl from '../.elements/InputEl'
-import { Button } from 'antd'
+import { Form, Field, FormikProps, Formik, FormikActions } from 'formik'
+import * as yup from 'yup'
+import { Query, QueryResult } from 'react-apollo'
+import { GET_LOCAL_STATES } from '../../data/actions/Queries'
+import { GetLocalStatesQuery } from '../../data/graphql-types'
+import { TChangeComponent } from './AuthenticatorRouter'
+import { AuthProxy } from './AuthProxy'
 
-interface ISignupProps {}
-export interface ISignupState {
-  isSubmitting: boolean
+interface ISignupFormValues {
+  email: string
+  password: string
+  phone: string
 }
 
-class WithQuery extends Query<GetSignUpInputsQuery> {}
-class WithSignUpMutation extends Mutation<SignupUserMutation, SignupUserMutationVariables> {}
+export interface ISignupProps {
+  changeComponentTo: TChangeComponent
+}
 
-class Signup extends React.Component<ISignupProps & RouteComponentProps<{}>, ISignupState> {
-  public state = {
-    isSubmitting: false
+export interface ISignupState {}
+
+// yup schema for signup form validation
+const schemaSignup = yup.object().shape({
+  email: yup
+    .string()
+    .email('Not a valid email')
+    .required('Email is required'),
+  password: yup
+    .string()
+    .min(6, 'Minimum 6 characters')
+    .required('Password is required'),
+  phone: yup.mixed().required()
+})
+
+// actual form for signup
+const FormSignup = (formikProps: FormikProps<ISignupFormValues>) => (
+  <Form>
+    <Field name="email" placeholder="Email" />
+    {formikProps.touched.email && formikProps.errors.email}
+    <br />
+    <Field name="password" placeholder="Password" type="password" />
+    {formikProps.touched.password && formikProps.errors.password}
+    <br />
+    <Field name="phone" placeholder="Phone" />
+    {formikProps.touched.phone && formikProps.errors.phone}
+    <br />
+    <button type="submit" disabled={formikProps.isSubmitting}>
+      Sign Up
+    </button>
+  </Form>
+)
+
+class Signup extends React.Component<ISignupProps, ISignupState> {
+  // method to register user in AWS Cognito
+  public signupSubmit = async (
+    values: ISignupFormValues,
+    formikBag: FormikActions<ISignupFormValues>,
+    qryRes: QueryResult<GetLocalStatesQuery>
+  ) => {
+    formikBag.setSubmitting(true)
+    // store email in link state
+    if (qryRes.data && qryRes.data.forms) {
+      const newData = {
+        ...qryRes.data,
+        forms: {
+          ...qryRes.data.forms,
+          input_Email: values.email
+        }
+      }
+      qryRes.client.writeData({ data: newData })
+    }
+
+    const res = await AuthProxy.signUp({
+      username: values.email,
+      password: values.password,
+      attributes: {
+        name: 'name',
+        phone_number: values.phone,
+        email: values.email
+      }
+    })
+
+    if (res.data) {
+      formikBag.resetForm()
+      formikBag.setSubmitting(false)
+      this.props.changeComponentTo('confirmSignUp')
+    } else if (res.error) {
+      formikBag.setErrors({
+        email: (res.error.message as string).includes('email') ? res.error.message : '',
+        password: (res.error.message as string).includes('password') ? res.error.message : '',
+        phone: (res.error.message as string).includes('phone number') ? res.error.message : ''
+      })
+      formikBag.setFieldValue('password', '', false)
+      formikBag.setSubmitting(false)
+    }
   }
 
   public render() {
+    console.log('signup')
     return (
-      <WithQuery query={GET_SIGN_UP_INPUTS}>
+      <Query<GetLocalStatesQuery> query={GET_LOCAL_STATES}>
         {qryRes => {
-          if (qryRes.error || !qryRes.data) return <h1>Error!!</h1>
-
-          // deconstruct the data object
-          const {
-            forms: { input_Signup_Email: email, input_Signup_Name: name, input_Signup_Password: password }
-          } = qryRes.data
-
+          if (!qryRes.data || !qryRes.data.forms) return null
           return (
-            <WithSignUpMutation mutation={SIGNUP_USER}>
-              {(signup, mtnRes) => {
-                return (
-                  <>
-                    <form
-                      onSubmit={async e => {
-                        e.preventDefault()
-                        // clear password on submit
-                        if (!qryRes.data) return
-                        qryRes.client.writeData({ data: { ...qryRes.data, forms: { ...qryRes.data.forms, input_Signup_Password: '' } } })
-                        // guarding the submit function so that users wont submit multiple times
-                        if (this.state.isSubmitting) return
-                        // setting the state to true so only first submit will trigger signup mutation
-                        this.setState({ isSubmitting: true })
-                        // wait for signup to return an response before setting isSubmitting to false
-                        let response: FetchResult<SignupUserMutation> | void
-                        try {
-                          response = await signup({ variables: { email, name, password } })
-                        } catch (error) {
-                          console.log(error)
-                          // call other function on error
-                        }
-                        // setting state iSubmitting to false because a reponse has been returned: pass or fail
-                        this.setState({ isSubmitting: false })
-                        // reset state using default state
-                        if (!response || !response.data) return
-                        qryRes.client.writeData({
-                          data: {
-                            ...qryRes.data,
-                            forms: {
-                              ...qryRes.data.forms,
-                              input_Signup_Name: '',
-                              input_Signup_Email: '',
-                              input_Signup_Password: ''
-                            }
-                          }
-                        })
-                        // store the token in local storage
-                        await localStorage.setItem(AUTH_TOKEN, response.data.signup.token)
-                        // signup finish and push to a page
-                        this.props.history.push('/')
-                      }}
-                    >
-                      <InputEl value={name} qryRes={qryRes} keyName="input_Signup_Name" placeholder="Name" />
-                      <br />
-                      <InputEl value={email} qryRes={qryRes} keyName="input_Signup_Email" placeholder="Email" />
-                      <br />
-                      <InputEl type="password" value={password} qryRes={qryRes} keyName="input_Signup_Password" placeholder="Password" />
-                      <br />
-                      <Button type="primary" htmlType="submit">
-                        Submit
-                      </Button>
-                    </form>
-                    <Button onClick={() => this.props.history.push('/login')}>Go to Login In</Button>
-                    {mtnRes.loading && <p>Loading...</p>}
-                    {mtnRes.error && <p>Error Please try again {mtnRes.error.message}</p>}
-                  </>
-                )
-              }}
-            </WithSignUpMutation>
+            <>
+              <h1>Sign Up</h1>
+              <Formik
+                initialValues={{
+                  email: qryRes.data.forms.input_Email,
+                  password: '',
+                  phone: '+65'
+                }}
+                validationSchema={schemaSignup}
+                onSubmit={(values, formikBag) => this.signupSubmit(values, formikBag, qryRes)}
+                component={FormSignup}
+              />
+              <button onClick={() => this.props.changeComponentTo('confirmSignUp')}>Confirm a Code</button>
+              <button onClick={() => this.props.changeComponentTo('signIn')}>Go to SignIn</button>
+            </>
           )
         }}
-      </WithQuery>
+      </Query>
     )
   }
 }
+
 export default Signup

@@ -79,7 +79,7 @@ class ContactInfo extends React.Component<
         {this.state.loading && <Progress percent={50} status="active" />}
         <Form onSubmit={this.handleOrderSubmit}>
           {/* each form element must be wrapped with Form.Item  */}
-          <FormItem validateStatus={emailError ? 'error' : ''} help={emailError || ''}>
+          <FormItem validateStatus={emailError ? 'error' : undefined} help={emailError || ''}>
             {/* the main this here, getFieldDecorator creates a property in form's state using the id */}
             {/* with some other properties like rules */}
             {/* this then wraps the actual element like input */}
@@ -88,22 +88,22 @@ class ContactInfo extends React.Component<
               rules: [{ type: 'email', required: true, message: 'Please input your email!' }]
             })(<Input type="email" prefix={<Icon type="mail" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Emaill Address" />)}
           </FormItem>
-          <FormItem validateStatus={nameError ? 'error' : ''} help={nameError || ''}>
+          <FormItem validateStatus={nameError ? 'error' : undefined} help={nameError || ''}>
             {getFieldDecorator('name', {
               rules: [{ min: 3, required: true, message: 'Please input your name!' }]
             })(<Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Name" />)}
           </FormItem>
-          <FormItem validateStatus={streetError ? 'error' : ''} help={streetError || ''}>
+          <FormItem validateStatus={streetError ? 'error' : undefined} help={streetError || ''}>
             {getFieldDecorator('street', {
               rules: [{ required: true, message: 'Please input your street!' }]
             })(<Input prefix={<Icon type="environment-o" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Street" />)}
           </FormItem>
-          <FormItem validateStatus={zipCodeError ? 'error' : ''} help={zipCodeError || ''}>
+          <FormItem validateStatus={zipCodeError ? 'error' : undefined} help={zipCodeError || ''}>
             {getFieldDecorator('zipCode', {
               rules: [{ required: true, message: 'Please input your zip code!' }]
             })(<Input prefix={<Icon type="bars" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Zip Code" />)}
           </FormItem>
-          <FormItem validateStatus={countryError ? 'error' : ''} help={countryError || ''}>
+          <FormItem validateStatus={countryError ? 'error' : undefined} help={countryError || ''}>
             {getFieldDecorator('country', {
               rules: [{ required: true, message: 'Please select your country!' }]
             })(
@@ -114,7 +114,7 @@ class ContactInfo extends React.Component<
               </Select>
             )}
           </FormItem>
-          <FormItem validateStatus={deliveryError ? 'error' : ''} help={deliveryError || ''}>
+          <FormItem validateStatus={deliveryError ? 'error' : undefined} help={deliveryError || ''}>
             {getFieldDecorator('delivery', {
               rules: [{ required: true, message: 'Please select your delivery method!' }]
             })(

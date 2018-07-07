@@ -5,7 +5,8 @@ export const types = {
   BURGER: 'Burger',
   UI: 'UI',
   BURGER_INGREDIENT: 'BurgerIngredients',
-  STATE: 'State'
+  STATE: 'State',
+  NAV: 'nav'
 }
 
 export interface IIngredients {
@@ -32,11 +33,11 @@ interface IState {
   }
   forms: {
     __typename: string
-    input_Signup_Name: string
-    input_Signup_Email: string
-    input_Signup_Password: string
-    input_Login_Email: string
-    input_Login_Password: string
+    input_Email: string
+  }
+  nav: {
+    __typename: string
+    nextPath: string
   }
 }
 
@@ -56,11 +57,11 @@ const defaultState: IState = {
   },
   forms: {
     __typename: types.FORMS,
-    input_Signup_Name: '',
-    input_Signup_Email: '',
-    input_Signup_Password: '',
-    input_Login_Email: '',
-    input_Login_Password: ''
+    input_Email: ''
+  },
+  nav: {
+    __typename: types.NAV,
+    nextPath: ''
   }
 }
 

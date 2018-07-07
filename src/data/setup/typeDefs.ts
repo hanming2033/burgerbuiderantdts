@@ -4,7 +4,8 @@ const typeDefs = `
     burger: Burger!
     ui: UI!
     ingredients: Ingredients!
-    forms: forms!
+    forms: forms
+    nav: nav
   }
 
   type UI {
@@ -31,13 +32,12 @@ const typeDefs = `
   }
 
   type forms {
-    input_Signup_Name: String!
-    input_Signup_Email: String!
-    input_Signup_Password: String!
-    input_Login_Email: String!
-    input_Login_Password: String!
+    input_Email: String!
   }
 
+  type nav {
+    nextPath: String!
+  }
 `
 
 export default typeDefs

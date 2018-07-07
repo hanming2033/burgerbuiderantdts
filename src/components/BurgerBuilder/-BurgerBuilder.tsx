@@ -8,8 +8,8 @@ import { IBurgerIngredientType } from './BurgerDisplay/BurgerIngredient'
 import BurgerOrderSummary from './BurgerDisplay/BurgerOrderSummary'
 import handleHttpError from '../../http/handleHttpError'
 import { Query, QueryResult } from 'react-apollo'
-import { GET_BURGERBUILDER_STATES } from '../../data/Queries'
-import { GetBurgerBuilderStatesQuery } from '../../data/setup/clientSchema-types'
+import { GET_BURGERBUILDER_STATES } from '../../data/actions/Queries'
+import { GetBurgerBuilderStatesQuery } from '../../data/graphql-types';
 
 export interface IBurgerBuilderProps {}
 
