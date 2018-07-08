@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { IBurgerProps } from '../BurgerBuilder/BurgerDisplay/Burger'
 import { Card, Icon, Avatar } from 'antd'
 import styled from 'styled-components'
 import { Query } from 'react-apollo'
@@ -9,20 +8,6 @@ const { Meta } = Card
 
 export interface IOrdersProps {}
 
-export interface ISingleOrderProps extends IBurgerProps {
-  id: string
-  customer: {
-    adress: {
-      country: string
-      postalCode: string
-      street: string
-    }
-    name: string
-    email: string
-  }
-  deliveryMethod: string
-  price: string
-}
 
 export interface IOrdersState {
   loading: boolean
