@@ -45,3 +45,24 @@ export interface GetLocalStatesQuery {
     nextPath: string,
   } | null,
 };
+
+export interface GetAllOrdersDangerousQuery {
+  listOrders:  {
+    __typename: "OrderConnection",
+    items:  Array< {
+      __typename: "Order",
+      id: string,
+      totalPrice: number,
+      meat: number,
+      salad: number,
+      cheese: number,
+      bacon: number,
+      country: string,
+      deliveryMethod: string,
+      email: string,
+      name: string,
+      street: string,
+      zipCode: string,
+    } | null > | null,
+  } | null,
+};

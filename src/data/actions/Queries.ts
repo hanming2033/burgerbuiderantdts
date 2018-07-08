@@ -46,6 +46,27 @@ export const GET_LOCAL_STATES = gql`
   }
 `
 
+export const GET_ALL_ORDERS_DANGEROUS = gql`
+  query GetAllOrdersDangerous {
+    listOrders {
+      items {
+        id
+        totalPrice
+        meat
+        salad
+        cheese
+        bacon
+        country
+        deliveryMethod
+        email
+        name
+        street
+        zipCode
+      }
+    }
+  }
+`
+
 // export const GET_SIGN_UP_INPUTS = gql`
 //   query GetSignUpInputs {
 //     forms @client {

@@ -10,6 +10,7 @@ import { TChangeComponent, TSetAuth } from './AuthenticatorRouter'
 import InputField from '../.elements/InputField'
 import { Button } from 'antd'
 import Spacer from '../.elements/Spacer'
+import styled from 'styled-components'
 
 // *1 define the form values interface
 interface ISigninFormValues {
@@ -47,6 +48,15 @@ const formSignin = ({ isSubmitting }: FormikProps<ISigninFormValues>) => (
     </Button>
   </Form>
 )
+
+export const Wrapper = styled.div`
+  margin: 20px auto;
+  width: 80%;
+  text-align: center;
+  @media (min-width: 600px) {
+    width: 500px;
+  }
+`
 
 // *Component
 class Signin extends React.Component<ISignInProps & RouteComponentProps<{}>, ISignInState> {
@@ -101,25 +111,27 @@ class Signin extends React.Component<ISignInProps & RouteComponentProps<{}>, ISi
           return (
             <>
               {/* // *5inject Formik component into view */}
-              <h1>Sign In</h1>
-              <Formik
-                // get current user email from global state first
-                initialValues={{
-                  email: qryRes.data.forms.input_Email || '',
-                  password: ''
-                }}
-                validationSchema={schemaSignup}
-                onSubmit={(values, formikBag) => this.login(values, formikBag, qryRes)}
-                component={formSignin}
-              />
-              <div style={{ height: '10px' }} />
-              <Button type="primary" htmlType="submit" onClick={() => this.props.changeComponentTo('forgotPassword')}>
-                Forgot Password
-              </Button>
-              <Spacer margin="5px" />
-              <Button type="primary" htmlType="submit" onClick={() => this.props.changeComponentTo('signUp')}>
-                Go to SignUp
-              </Button>
+              <Wrapper>
+                <h1>Sign In</h1>
+                <Formik
+                  // get current user email from global state first
+                  initialValues={{
+                    email: qryRes.data.forms.input_Email || '',
+                    password: ''
+                  }}
+                  validationSchema={schemaSignup}
+                  onSubmit={(values, formikBag) => this.login(values, formikBag, qryRes)}
+                  component={formSignin}
+                />
+                <div style={{ height: '10px' }} />
+                <Button type="primary" htmlType="submit" onClick={() => this.props.changeComponentTo('forgotPassword')}>
+                  Forgot Password
+                </Button>
+                <Spacer margin="5px" />
+                <Button type="primary" htmlType="submit" onClick={() => this.props.changeComponentTo('signUp')}>
+                  Go to SignUp
+                </Button>
+              </Wrapper>
             </>
           )
         }}

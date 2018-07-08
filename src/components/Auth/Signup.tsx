@@ -6,6 +6,9 @@ import { GET_LOCAL_STATES } from '../../data/actions/Queries'
 import { GetLocalStatesQuery } from '../../data/graphql-types'
 import { TChangeComponent } from './AuthenticatorRouter'
 import { AuthProxy } from './AuthProxy'
+import { Wrapper } from './SignIn'
+import InputField from '../.elements/InputField'
+import { Button } from 'antd'
 
 interface ISignupFormValues {
   email: string
@@ -35,18 +38,12 @@ const schemaSignup = yup.object().shape({
 // actual form for signup
 const FormSignup = (formikProps: FormikProps<ISignupFormValues>) => (
   <Form>
-    <Field name="email" placeholder="Email" />
-    {formikProps.touched.email && formikProps.errors.email}
-    <br />
-    <Field name="password" placeholder="Password" type="password" />
-    {formikProps.touched.password && formikProps.errors.password}
-    <br />
-    <Field name="phone" placeholder="Phone" />
-    {formikProps.touched.phone && formikProps.errors.phone}
-    <br />
-    <button type="submit" disabled={formikProps.isSubmitting}>
+    <Field name="email" placeholder="Email" component={InputField} />
+    <Field name="password" placeholder="Password" type="password" component={InputField} />
+    <Field name="phone" placeholder="Phone" component={InputField} />
+    <Button type="primary" htmlType="submit" loading={formikProps.isSubmitting}>
       Sign Up
-    </button>
+    </Button>
   </Form>
 )
 
@@ -103,19 +100,21 @@ class Signup extends React.Component<ISignupProps, ISignupState> {
           if (!qryRes.data || !qryRes.data.forms) return null
           return (
             <>
-              <h1>Sign Up</h1>
-              <Formik
-                initialValues={{
-                  email: qryRes.data.forms.input_Email,
-                  password: '',
-                  phone: '+65'
-                }}
-                validationSchema={schemaSignup}
-                onSubmit={(values, formikBag) => this.signupSubmit(values, formikBag, qryRes)}
-                component={FormSignup}
-              />
-              <button onClick={() => this.props.changeComponentTo('confirmSignUp')}>Confirm a Code</button>
-              <button onClick={() => this.props.changeComponentTo('signIn')}>Go to SignIn</button>
+              <Wrapper>
+                <h1>Sign Up</h1>
+                <Formik
+                  initialValues={{
+                    email: qryRes.data.forms.input_Email,
+                    password: '',
+                    phone: '+65'
+                  }}
+                  validationSchema={schemaSignup}
+                  onSubmit={(values, formikBag) => this.signupSubmit(values, formikBag, qryRes)}
+                  component={FormSignup}
+                />
+                <Button onClick={() => this.props.changeComponentTo('confirmSignUp')}>Confirm a Code</Button>
+                <Button onClick={() => this.props.changeComponentTo('signIn')}>Go to SignIn</Button>
+              </Wrapper>
             </>
           )
         }}

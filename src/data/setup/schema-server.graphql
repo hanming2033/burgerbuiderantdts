@@ -1,51 +1,72 @@
-﻿type Comment {
-  #  A unique identifier for the comment.
-  commentId: String!
-  #  The comment's content.
-  content: String!
-  #  The comment timestamp. This field is indexed to enable sorted pagination.
-  createdAt: String!
-  #  The id of the comment's parent event.
-  eventId: ID!
+﻿type Mutation {
+  createOrder(input: CreateOrderInput!): Order
+  deleteOrder(input: DeleteOrderInput!): Order
+  updateOrder(input: UpdateOrderInput!): Order
 }
 
-type CommentConnection {
-  items: [Comment]
-  nextToken: String
-}
-
-type Event {
-  #  Paginate through all comments belonging to an individual post.
-  comments(limit: Int, nextToken: String): CommentConnection
-  description: String
+type Order {
+  bacon: Int!
+  cheese: Int!
+  country: String!
+  deliveryMethod: String!
+  email: String!
   id: ID!
-  name: String
-  when: String
-  where: String
+  meat: Int!
+  name: String!
+  salad: Int!
+  street: String!
+  totalPrice: Float!
+  zipCode: String!
 }
 
-type EventConnection {
-  items: [Event]
+type OrderConnection {
+  items: [Order]
   nextToken: String
-}
-
-type Mutation {
-  #  Comment on an event.
-  commentOnEvent(content: String!, createdAt: String!, eventId: ID!): Comment
-  #  Create a single event.
-  createEvent(description: String!, name: String!, when: String!, where: String!): Event
-  #  Delete a single event by id.
-  deleteEvent(id: ID!): Event
 }
 
 type Query {
-  #  Get a single event by id.
-  getEvent(id: ID!): Event
-  #  Paginate through events.
-  listEvents(limit: Int, nextToken: String): EventConnection
+  getOrder(id: ID!): Order
+  listOrders(after: String, first: Int): OrderConnection
 }
 
 type Subscription {
-  subscribeToEventComments(eventId: String!): Comment
-    @aws_subscribe(mutations:["commentOnEvent"])
+  onCreateOrder(cheese: Int, id: ID, meat: Int, salad: Int, totalPrice: Float): Order
+    @aws_subscribe(mutations:["createOrder"])
+  onDeleteOrder(cheese: Int, id: ID, meat: Int, salad: Int, totalPrice: Float): Order
+    @aws_subscribe(mutations:["deleteOrder"])
+  onUpdateOrder(cheese: Int, id: ID, meat: Int, salad: Int, totalPrice: Float): Order
+    @aws_subscribe(mutations:["updateOrder"])
+}
+
+input CreateOrderInput {
+  bacon: Int!
+  cheese: Int!
+  country: String!
+  deliveryMethod: String!
+  email: String!
+  meat: Int!
+  name: String!
+  salad: Int!
+  street: String!
+  totalPrice: Float!
+  zipCode: String!
+}
+
+input DeleteOrderInput {
+  id: ID!
+}
+
+input UpdateOrderInput {
+  bacon: Int
+  cheese: Int
+  country: String
+  deliveryMethod: String
+  email: String
+  id: ID!
+  meat: Int
+  name: String
+  salad: Int
+  street: String
+  totalPrice: Float
+  zipCode: String
 }

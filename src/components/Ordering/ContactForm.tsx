@@ -55,7 +55,7 @@ const Wrapper = styled.div`
   }
 `
 
-const formContact = ({ isSubmitting, handleSubmit }: FormikProps<IContactFormValues>, cancelCheckout: () => void) => {
+const formContact = ({ isSubmitting, handleSubmit, isValid }: FormikProps<IContactFormValues>, cancelCheckout: () => void) => {
   return (
     <Form onSubmit={handleSubmit}>
       {/* Form */}
@@ -75,7 +75,7 @@ const formContact = ({ isSubmitting, handleSubmit }: FormikProps<IContactFormVal
         component={SelectField}
       />
       <FormItem>
-        <Button type="primary" htmlType="submit" loading={isSubmitting}>
+        <Button type="primary" htmlType="submit" loading={isSubmitting} disabled={!isValid}>
           Submit Order
         </Button>
         <Spacer margin={'10px'} />
