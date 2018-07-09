@@ -5,12 +5,27 @@ import { Query } from 'react-apollo'
 import { GET_BURGER_DETAILS } from '../../data/actions/Queries'
 import { GetBurgerDetailsQuery } from '../../data/graphql-types'
 import ContactForm from './ContactForm'
+import { Auth } from 'aws-amplify'
 
 export interface ICheckoutProps {}
 
 export interface ICheckoutState {}
 
+// TODO: add getUser & updateUser to AuthProxy
+const getUser = async () => {
+  try {
+    const user = await Auth.currentAuthenticatedUser()
+    return user
+  } catch (error) {
+    return error
+  }
+}
+
+// TODO: retrieve information for cognito
 const Checkout: React.SFC<ICheckoutProps & RouteComponentProps<{}>> = props => {
+  getUser().then(user => {
+    console.log(user)
+  })
   return (
     <Query<GetBurgerDetailsQuery> query={GET_BURGER_DETAILS}>
       {qryRes => {

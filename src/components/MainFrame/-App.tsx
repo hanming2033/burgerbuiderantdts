@@ -4,9 +4,8 @@ import { Switch, Redirect, Route } from 'react-router-dom'
 import BurgerBuilder from '../BurgerBuilder/-BurgerBuilder'
 import Checkout from '../Ordering/Checkout'
 import Orders from '../Ordering/Orders'
-import Signup from '../Auth/SignUp'
-import Signin from '../Auth/SignIn'
 import ProtectedRoute from '../Auth/AuthenticatorRouter'
+import MyAccount from '../MyAccount/MyAccount'
 
 class App extends React.Component {
   public render() {
@@ -17,10 +16,9 @@ class App extends React.Component {
             <Redirect from="/" exact to="/createburger" />
             <Redirect from="/home" exact to="/createburger" />
             <Route path="/createburger" component={BurgerBuilder} />
-            <Route path="/checkout" component={Checkout} />
+            <ProtectedRoute path="/checkout" component={Checkout} />
             <ProtectedRoute path="/orders" component={Orders} />
-            <ProtectedRoute path="/signup" component={Signup} />
-            <ProtectedRoute path="/login" component={Signin} />
+            <ProtectedRoute path="/account" component={MyAccount} />
           </Switch>
         </Layout>
       </div>

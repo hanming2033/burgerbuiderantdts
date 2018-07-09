@@ -51,11 +51,8 @@ class TopNav extends React.Component<ITopNavProps & RouteComponentProps<{}>, ITo
         <BigScreenMenuItem key="orders">
           <Icon type="appstore" />Orders
         </BigScreenMenuItem>
-        <BigScreenMenuItem key="login">
-          <Icon type="appstore" />Login
-        </BigScreenMenuItem>
-        <BigScreenMenuItem key="signup">
-          <Icon type="appstore" />Signup
+        <BigScreenMenuItem key="account">
+          <Icon type="appstore" />My Account
         </BigScreenMenuItem>
         <SmallScreenMenuItem
           title={
@@ -67,8 +64,7 @@ class TopNav extends React.Component<ITopNavProps & RouteComponentProps<{}>, ITo
           <Menu.ItemGroup>
             <Menu.Item key="createburger">Create Burger</Menu.Item>
             <Menu.Item key="orders">Orders</Menu.Item>
-            <Menu.Item key="login">Login</Menu.Item>
-            <Menu.Item key="signup">Signup</Menu.Item>
+            <Menu.Item key="account">Login</Menu.Item>
           </Menu.ItemGroup>
         </SmallScreenMenuItem>
       </FlexMenu>
