@@ -55,7 +55,7 @@ export default class Orders extends React.Component<IOrdersProps, IOrdersState> 
 
   public render() {
     return (
-      <WithGetOrdersQuery query={GET_ALL_ORDERS_DANGEROUS}>
+      <WithGetOrdersQuery query={GET_ALL_ORDERS_DANGEROUS} fetchPolicy="network-only">
         {qryRes => {
           if (qryRes.loading) return <p>Loading...</p>
           if (!qryRes.data || !qryRes.data.listOrders) return <p>Error</p>

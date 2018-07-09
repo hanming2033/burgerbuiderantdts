@@ -19,8 +19,8 @@ class App extends React.Component {
             <Route path="/createburger" component={BurgerBuilder} />
             <Route path="/checkout" component={Checkout} />
             <ProtectedRoute path="/orders" component={Orders} />
-            <Route path="/signup" component={Signup} />
-            <Route path="/login" component={Signin} />
+            <ProtectedRoute path="/signup" component={Signup} />
+            <ProtectedRoute path="/login" component={Signin} />
           </Switch>
         </Layout>
       </div>

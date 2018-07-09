@@ -1,12 +1,10 @@
 import * as React from 'react'
 import Burger from './BurgerDisplay/Burger'
 import BuilControls from './BuildControls/BuildControls'
-import orderAxios from '../../http/axios-order'
 import { RouteComponentProps } from 'react-router-dom'
 import { Progress, Modal } from 'antd'
 import { IBurgerIngredientType } from './BurgerDisplay/BurgerIngredient'
 import BurgerOrderSummary from './BurgerDisplay/BurgerOrderSummary'
-import handleHttpError from '../../http/handleHttpError'
 import { Query, QueryResult } from 'react-apollo'
 import { GET_BURGERBUILDER_STATES } from '../../data/actions/Queries'
 import { GetBurgerBuilderStatesQuery } from '../../data/graphql-types'
@@ -39,18 +37,6 @@ export const MIN_NUMBER = {
 // class WithQuery extends Query<GetBurgerBuilderStatesQuery> {}
 
 class BurgerBuilder extends React.Component<IBurgerBuilderProps & RouteComponentProps<{}>, IBurgerBuilderState> {
-  // public componentDidMount() {
-  //   orderAxios
-  //     .get('/ingredients.json')
-  //     .then(res => {
-  //       this.setState({ ingredients: res.data })
-  //       return res
-  //     })
-  //     .catch(err => {
-  //       this.setState({ error: true })
-  //     })
-  // }
-
   public handleAddIngredient = (igType: IBurgerIngredientType, qryRes: QueryResult<GetBurgerBuilderStatesQuery>) => {
     if (qryRes.data) {
       const qty: number = qryRes.data.burger.ingredients[igType]
@@ -161,4 +147,4 @@ class BurgerBuilder extends React.Component<IBurgerBuilderProps & RouteComponent
   }
 }
 
-export default handleHttpError(BurgerBuilder, orderAxios)
+export default BurgerBuilder
