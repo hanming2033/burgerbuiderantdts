@@ -110,7 +110,6 @@ export const AuthProxy = {
   }
 }
 
-// TODO: set auth here. this shld be the final check
 export const verifyUser = async (user: any, changeComponentTo: TChangeComponent, setAuth: TSetAuth) => {
   const verification = await Auth.verifiedContact(user)
   console.log('VerifyContact Post-Verification Result : ', verification)
