@@ -111,5 +111,4 @@ const ContactForm: React.SFC<IContactInfoProps & RouteComponentProps<{}>> = prop
   )
 }
 
-// export default handleHttpError(Form.create()(ContactInfo), orderAxios)
 export default ContactForm
