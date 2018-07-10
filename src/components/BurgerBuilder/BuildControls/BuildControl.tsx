@@ -13,7 +13,7 @@ interface IbuildControlProps {
   type: IBurgerIngredientType
 }
 
-const BuildControl = styled.div`
+const BuildControlContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -25,18 +25,18 @@ const Label = styled.div`
   width: 80px;
 `
 
-const buildControl: React.SFC<IbuildControlProps> = props => {
+const BuildControl: React.SFC<IbuildControlProps> = props => {
   const disableAdd = props.ingredients && props.ingredients[props.type] >= MAX_NUMBER[props.type] ? true : false
   const disableRemove = props.ingredients && props.ingredients[props.type] <= MIN_NUMBER[props.type] ? true : false
 
   return (
-    <BuildControl>
+    <BuildControlContainer>
       <Label>{props.label}</Label>
       <Button shape="circle" icon="minus" size="default" onClick={props.removeIngredient} disabled={disableRemove} />
       <Spacer margin="0 5px" />
       <Button shape="circle" icon="plus" size="default" onClick={props.addIngredient} disabled={disableAdd} />
-    </BuildControl>
+    </BuildControlContainer>
   )
 }
 
-export default buildControl
+export default BuildControl

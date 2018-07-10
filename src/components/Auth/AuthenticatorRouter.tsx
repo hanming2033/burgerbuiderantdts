@@ -9,8 +9,8 @@ import SignupConfirm from './SignupConfirm'
 
 interface IProtectedRouteProps {
   component:
-    | React.ComponentClass<RouteComponentProps<any>>// , StaticContext
-    | React.StatelessComponent<RouteComponentProps<any>>// , StaticContext
+    | React.ComponentClass<RouteComponentProps<any>> // , StaticContext
+    | React.StatelessComponent<RouteComponentProps<any>> // , StaticContext
     | React.ComponentClass<any>
     | React.StatelessComponent<any>
 }
@@ -38,7 +38,7 @@ class ProtectedRoute extends React.Component<IProtectedRouteProps & RouteProps, 
   public state = {
     isAuthenticated: false,
     authData: null,
-    componentToShow: 'signIn' as validComponents
+    componentToShow: 'signUp' as validComponents
   }
 
   public setAuth: TSetAuth = isAuthenticated => {

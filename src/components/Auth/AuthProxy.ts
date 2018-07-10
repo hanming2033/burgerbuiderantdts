@@ -1,6 +1,10 @@
 import { Auth, JS } from 'aws-amplify'
 import { TChangeComponent, TSetAuth } from './AuthenticatorRouter'
 
+/*FutureTodo
+  add getUser and upateUser proxy methods
+  add getUserCache proxy methods using apollo link state
+*/
 interface IAuthResult {
   userVerified?: boolean
   data?: ICognitoUser & any

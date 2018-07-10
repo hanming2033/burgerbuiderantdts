@@ -8,7 +8,6 @@ const { Meta } = Card
 
 export interface IOrdersProps {}
 
-
 export interface IOrdersState {
   loading: boolean
 }
@@ -65,5 +64,3 @@ export default class Orders extends React.Component<IOrdersProps, IOrdersState> 
     )
   }
 }
-
-// todo: figure out how to auth

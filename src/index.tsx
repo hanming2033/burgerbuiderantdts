@@ -47,7 +47,7 @@ const appSyncLink = createAppSyncLink({
 
 const link = ApolloLink.from([stateLink, appSyncLink])
 
-const client = new AWSAppSyncClient({} as any, { link } as any)
+export const client = new AWSAppSyncClient({} as any, { link } as any)
 
 ReactDOM.render(
   <ApolloProvider client={client as any}>

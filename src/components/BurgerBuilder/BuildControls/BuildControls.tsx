@@ -23,19 +23,19 @@ const MainControls = styled.div`
   padding: 10px 0;
 `
 
-const PriceParagraph = styled.p`
+export const PriceParagraph = styled.p`
   font-weight: bold;
 `
 
 // BuildControls data optional
-const buildContolsData: Array<{ label: string; type: IBurgerIngredientType }> = [
+export const buildContolsData: Array<{ label: string; type: IBurgerIngredientType }> = [
   { label: 'Salad', type: 'salad' },
   { label: 'Bacon', type: 'bacon' },
   { label: 'Cheese', type: 'cheese' },
   { label: 'Meat', type: 'meat' }
 ]
 
-const buildControls: React.SFC<IBuildControlsProps> = props => {
+const BuildControls: React.SFC<IBuildControlsProps> = props => {
   const CompBuildControls = (data: Array<{ label: string; type: IBurgerIngredientType }>) =>
     data.map(row => (
       <BuildControl
@@ -58,4 +58,4 @@ const buildControls: React.SFC<IBuildControlsProps> = props => {
   )
 }
 
-export default buildControls
+export default BuildControls

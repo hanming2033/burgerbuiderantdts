@@ -99,23 +99,21 @@ class Signup extends React.Component<ISignupProps, ISignupState> {
         {qryRes => {
           if (!qryRes.data || !qryRes.data.forms) return null
           return (
-            <>
-              <Wrapper>
-                <h1>Sign Up</h1>
-                <Formik
-                  initialValues={{
-                    email: qryRes.data.forms.input_Email,
-                    password: '',
-                    phone: '+65'
-                  }}
-                  validationSchema={schemaSignup}
-                  onSubmit={(values, formikBag) => this.signupSubmit(values, formikBag, qryRes)}
-                  component={FormSignup}
-                />
-                <Button onClick={() => this.props.changeComponentTo('confirmSignUp')}>Confirm a Code</Button>
-                <Button onClick={() => this.props.changeComponentTo('signIn')}>Go to SignIn</Button>
-              </Wrapper>
-            </>
+            <Wrapper>
+              <h1>Sign Up</h1>
+              <Formik
+                initialValues={{
+                  email: qryRes.data.forms.input_Email,
+                  password: '',
+                  phone: '+65'
+                }}
+                validationSchema={schemaSignup}
+                onSubmit={(values, formikBag) => this.signupSubmit(values, formikBag, qryRes)}
+                component={FormSignup}
+              />
+              <Button onClick={() => this.props.changeComponentTo('confirmSignUp')}>Confirm a Code</Button>
+              <Button onClick={() => this.props.changeComponentTo('signIn')}>Go to SignIn</Button>
+            </Wrapper>
           )
         }}
       </Query>
